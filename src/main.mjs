@@ -86,24 +86,33 @@ function create() {
 
 function update() {
   cursors = this.input.keyboard.createCursorKeys();
+
   if (cursors.left.isDown) {
     player.setVelocityX(-160);
-
     player.anims.play("left", true);
   } else if (cursors.right.isDown) {
     player.setVelocityX(160);
-
     player.anims.play("right", true);
-  } else if (cursors.up.isDown) {
-    player.setVelocityY(-160);
+  } else {
+    player.setVelocityX(0);
+  }
 
+  if (cursors.up.isDown) {
+    player.setVelocityY(-160);
     player.anims.play("up", true);
   } else if (cursors.down.isDown) {
     player.setVelocityY(160);
-    
     player.anims.play("down", true);
   } else {
-    player.setVelocityX(0);
+    player.setVelocityY(0);
+  }
+
+  if (
+    !cursors.left.isDown &&
+    !cursors.right.isDown &&
+    !cursors.up.isDown &&
+    !cursors.down.isDown
+  ) {
     player.anims.play("turn");
   }
 }
