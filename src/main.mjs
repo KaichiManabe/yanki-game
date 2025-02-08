@@ -53,6 +53,7 @@ function create() {
   ];
   blockInfo.forEach((blo) => {
     const block = this.add.rectangle(blo.x, blo.y, blo.w, blo.h, 0xaa0000);
+    this.physics.add.existing(block, true);
     blocks.add(block);
   });
 
@@ -92,7 +93,10 @@ function create() {
   });
 
   //// 敵キャラ
-  const enemies = this.physics.add.group();
+  const enemies = this.physics.add.group({
+    defaultKey: "dude",
+    collideWorldBounds: true,
+  });
 
   const enemyInfo = [
     { name: 1, x: 250, y: 50, w: 30, h: 30 },
@@ -103,10 +107,13 @@ function create() {
   ];
 
   enemyInfo.forEach((ene) => {
-    const enemy = this.add.rectangle(ene.x, ene.y, ene.w, ene.h, 0xff0000);
-    this.physics.add.existing(enemy);
-
+    const enemy = this.physics.add.sprite(ene.x, ene.y, "dude"); // "dude" スプライトを使用
     enemies.add(enemy);
+
+    enemy.setVelocityY(150);
+    enemy.setBounce(1, 1);
+    enemy.setCollideWorldBounds(true);
+    enemy.body.allowGravity = false;
   });
 
   this.physics.add.overlap(player, enemies, () => {
