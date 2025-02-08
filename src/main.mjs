@@ -38,7 +38,7 @@ function preload() {
 
 function create() {
   ////スコア
-  const score = 0;
+
   // 背景画像
   this.add.image(400, 300, "sky");
 
@@ -47,6 +47,11 @@ function create() {
   platforms.create(400, 32, "wall").setScale(2).refreshBody();
   platforms.create(400, 568, "wall").setScale(2).refreshBody();
 
+  let score = 0;
+  scoreText = this.add.text(30, 30, "スコア: " + score, {
+    fontSize: "20px",
+    fill: "#fff",
+  });
   //// 障害物
   const blocks = this.physics.add.staticGroup();
   const blockInfo = [
@@ -243,10 +248,20 @@ function create() {
   this.physics.add.overlap(player, enemies, () => {
     player.setPosition(100, 450);
     alert("ゲームオーバー");
+    resetGame();
   });
+  function resetGame() {
+    player.setPosition(100, 450);
+    player.setScale(1);
+    score = 0;
+    scoreText.setText("スコア: " + score);
+
+    // スターを復活させる
+    star.enableBody(true, 100, 350, true, true);
+  }
 
   //// ゴール
-  const goal = this.add.rectangle(750, 50, 100, 50, 0x00ff00);
+  const goal = this.add.rectangle(750, 70, 100, 10, 0x00ff00);
   this.physics.add.existing(goal);
   goal.body.setImmovable(true);
   goal.body.allowGravity = false;
@@ -254,13 +269,19 @@ function create() {
   this.physics.add.overlap(player, goal, () => {
     alert("ゴール！");
     player.setPosition(100, 450);
+    player.setScale(1);
+    score += 1000;
+    scoreText.setText("スコア: " + score);
   });
 
   ////スター
   const star = this.physics.add.sprite(100, 300, "star");
   this.physics.add.existing(star);
   this.physics.add.overlap(player, star, () => {
-    star.destroy();
+    star.disableBody(true, true);
+    score = score + 1000;
+    player.setScale(1.4);
+    scoreText.setText("スコア: " + score);
   });
 
   ////衝突
