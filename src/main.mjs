@@ -92,7 +92,7 @@ function create() {
   });
 
   //// 敵キャラ
-  const enemys = this.physics.add.group();
+  const enemies = this.physics.add.group();
 
   const enemyInfo = [
     { name: 1, x: 250, y: 50, w: 30, h: 30 },
@@ -106,10 +106,10 @@ function create() {
     const enemy = this.add.rectangle(ene.x, ene.y, ene.w, ene.h, 0xff0000);
     this.physics.add.existing(enemy);
 
-    enemys.add(enemy);
+    enemies.add(enemy);
   });
 
-  this.physics.add.overlap(player, enemys, () => {
+  this.physics.add.overlap(player, enemies, () => {
     player.setPosition(100, 450);
     alert("ゲームオーバー");
   });
@@ -129,8 +129,8 @@ function create() {
   ////衝突
   this.physics.add.collider(player, platforms);
   this.physics.add.collider(player, blocks);
-  this.physics.add.collider(enemys, blocks);
-  this.physics.add.collider(enemys, platforms);
+  this.physics.add.collider(enemies, blocks);
+  this.physics.add.collider(enemies, platforms);
 }
 
 function update() {
