@@ -37,15 +37,14 @@ export class GameScene1 extends Phaser.Scene {
 
     // 設定ボタン
     const settingsButton = this.add
-      .image(750, 40, "setting") // 右上に配置
+      .image(750, 40, "setting")
       .setScale(0.4)
       .setInteractive();
 
     settingsButton.on("pointerdown", () => {
-      // this.showPauseMenu();
+      this.scene.pause(); // ゲームシーンを一時停止
+      this.scene.launch("PauseScene");
     });
-
-    this.cursors = this.input.keyboard.createCursorKeys();
 
     ////スコア
     let score = 0;
