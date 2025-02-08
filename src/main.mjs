@@ -82,7 +82,7 @@ function create() {
 
   // 衝突判定
   this.physics.add.collider(player, platforms);
-  
+
   const blocks = this.physics.add.group();
 
   // 配置するブロックの座標リスト
@@ -120,6 +120,13 @@ function create() {
   this.physics.add.overlap(player, blocks, () => {
     player.setPosition(100, 450);
     alert("ゲームオーバー");
+  });
+
+  const goal = this.add.rectangle(800, 100, 50, 100, 0x00ff00);
+  this.physics.add.existing(goal);
+  this.physics.add.overlap(player, goal, () => {
+    alert("ゴール！");
+    player.setPosition(100, 450);
   });
 }
 
