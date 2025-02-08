@@ -99,22 +99,22 @@ function create() {
   });
 
   const enemyInfo = [
-    { name: 1, x: 250, y: 50, w: 30, h: 30 },
-    { name: 2, x: 300, y: 150, w: 40, h: 30 },
-    { name: 3, x: 400, y: 100, w: 30, h: 30 },
+    { name: 2, x: 300, y: 150, w: 40, h: 30, rotate: true },
+    { name: 3, x: 400, y: 100, w: 30, h: 30, rotate: true },
     { name: 4, x: 500, y: 250, w: 30, h: 30 },
-    { name: 5, x: 600, y: 50, w: 30, h: 30 },
   ];
 
   enemyInfo.forEach((ene) => {
-    const enemy = this.physics.add.sprite(ene.x, ene.y, "dude"); // "dude" スプライトを使用
+    const enemy = this.physics.add.sprite(ene.x, ene.y, "dude");
     enemies.add(enemy);
-
     enemy.setVelocityY(150);
     enemy.setBounce(1, 1);
     enemy.setCollideWorldBounds(true);
+    enemy.rotate = ene.rotate;
     enemy.body.allowGravity = false;
   });
+
+  
 
   this.physics.add.overlap(player, enemies, () => {
     player.setPosition(100, 450);
@@ -136,8 +136,35 @@ function create() {
   ////衝突
   this.physics.add.collider(player, platforms);
   this.physics.add.collider(player, blocks);
-  this.physics.add.collider(enemies, blocks);
-  this.physics.add.collider(enemies, platforms);
+
+  this.physics.add.collider(enemies, blocks, (enemy) => {
+    if (enemy.rotate) {
+      // ランダムに 90度回転
+      enemy.angle += 90;
+
+      // 方向を変更
+      const currentVelocityX = enemy.body.velocity.x;
+      const currentVelocityY = enemy.body.velocity.y;
+
+      // ランダムに X/Y を切り替え
+      enemy.setVelocityX(currentVelocityY);
+      enemy.setVelocityY(-currentVelocityX);
+    }
+  });
+  this.physics.add.collider(enemies, platforms, (enemy) => {
+    if (enemy.rotate) {
+      // ランダムに 90度回転
+      enemy.angle += 90;
+
+      // 方向を変更
+      const currentVelocityX = enemy.body.velocity.x;
+      const currentVelocityY = enemy.body.velocity.y;
+
+      // ランダムに X/Y を切り替え
+      enemy.setVelocityX(currentVelocityY);
+      enemy.setVelocityY(-currentVelocityX);
+    }
+  });
 }
 
 function update() {
