@@ -37,18 +37,19 @@ function preload() {
 }
 
 function create() {
-  //後で消す
+  // 背景画像
   this.add.image(400, 300, "sky");
+
+  // 静的プラットフォームを作成
   platforms = this.physics.add.staticGroup();
   platforms.create(400, 32, "wall").setScale(2).refreshBody();
   platforms.create(400, 568, "wall").setScale(2).refreshBody();
 
-  //player
+  // プレイヤーの作成
   player = this.physics.add.sprite(100, 450, "dude");
-  //外に出ないように
   player.setCollideWorldBounds(true);
 
-  //playerの描画
+  // プレイヤーのアニメーション
   this.anims.create({
     key: "left",
     frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
@@ -61,14 +62,12 @@ function create() {
     frameRate: 10,
     repeat: -1,
   });
-
   this.anims.create({
     key: "up",
     frames: [{ key: "dude", frame: 4 }],
     frameRate: 10,
     repeat: -1,
   });
-
   this.anims.create({
     key: "down",
     frames: [{ key: "dude", frame: 4 }],
@@ -81,9 +80,10 @@ function create() {
     frameRate: 20,
   });
 
+  // 衝突判定
   this.physics.add.collider(player, platforms);
-
-  const blocks = [];
+  
+  const blocks = this.physics.add.group();
 
   // 配置するブロックの座標リスト
   const positions = [
@@ -94,10 +94,16 @@ function create() {
     { x: 600, y: 50 },
   ];
 
-  // 各座標に対してブロックを作成し、配列に追加
+  // 各座標に対してブロックを作成し、グループに追加
   positions.forEach((pos) => {
+    // 長方形を作成
     const block = this.add.rectangle(pos.x, pos.y, 30, 30, 0xff0000);
-    blocks.push(block);
+
+    // 物理エンジンに追加
+    this.physics.add.existing(block);
+
+    // ブロックを物理グループに追加
+    blocks.add(block);
 
     // Tweenで上下に動かす
     this.tweens.add({
@@ -108,6 +114,12 @@ function create() {
       repeat: -1, // 無限ループ
       ease: "Sine.easeInOut",
     });
+  });
+
+  // プレイヤーがブロックに触れたら初期位置に戻す
+  this.physics.add.overlap(player, blocks, () => {
+    player.setPosition(100, 450);
+    alert("ゲームオーバー");
   });
 }
 
