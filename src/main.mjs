@@ -115,7 +115,42 @@ function create() {
   });
 
   //ぐるぐる回転する敵
+  // 敵キャラのスプライト
   const circleEnemy = this.physics.add.sprite(400, 100, "dude");
+
+  // 当たり判定を 1.5 倍に設定
+  const hitboxWidth = circleEnemy.width * 1;
+  const hitboxHeight = circleEnemy.height * 4;
+  circleEnemy.setSize(hitboxWidth, hitboxHeight);
+
+  // 物理ボディのオフセットを中央に調整
+  circleEnemy.setOffset(
+    (circleEnemy.width - hitboxWidth) / 2,
+    (circleEnemy.height - hitboxHeight) / 2
+  );
+
+  // 当たり判定の範囲を描画するための Graphics
+  const hitboxGraphics = this.add.graphics();
+  hitboxGraphics.fillStyle(0xff0000, 0.3); // 赤色 (0xff0000)、透明度 0.3
+  hitboxGraphics.fillRect(
+    circleEnemy.x - hitboxWidth / 2,
+    circleEnemy.y - hitboxHeight / 2,
+    hitboxWidth,
+    hitboxHeight
+  );
+
+  // 更新処理 (スプライトの位置に合わせて描画を移動)
+  this.physics.world.on("worldstep", () => {
+    hitboxGraphics.clear(); // クリア
+    hitboxGraphics.fillStyle(0xff0000, 0.3); // 赤色 (透明度 0.3)
+    hitboxGraphics.fillRect(
+      circleEnemy.x - hitboxWidth / 2,
+      circleEnemy.y - hitboxHeight / 2,
+      hitboxWidth,
+      hitboxHeight
+    );
+  });
+
   circleEnemy.setVelocityX(150); // 初期の移動方向をX軸に設定
   circleEnemy.angle = 0; // 初期角度
   circleEnemy.distanceTraveled = 0; // 移動距離を追跡
