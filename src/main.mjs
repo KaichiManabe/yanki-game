@@ -45,7 +45,18 @@ function create() {
   platforms.create(400, 32, "wall").setScale(2).refreshBody();
   platforms.create(400, 568, "wall").setScale(2).refreshBody();
 
-  // プレイヤーの作成
+  //// 障害物
+  const blocks = this.physics.add.staticGroup();
+  const blockInfo = [
+    { x: 300, y: 500, w: 50, h: 300 },
+    { x: 200, y: 150, w: 50, h: 500 },
+  ];
+  blockInfo.forEach((blo) => {
+    const block = this.add.rectangle(blo.x, blo.y, blo.w, blo.h, 0xaa0000);
+    blocks.add(block);
+  });
+
+  //// プレイヤー
   player = this.physics.add.sprite(100, 450, "dude");
   player.setCollideWorldBounds(true);
 
@@ -80,13 +91,10 @@ function create() {
     frameRate: 20,
   });
 
-  // 衝突判定
-  this.physics.add.collider(player, platforms);
+  //// 敵キャラ
+  const enemys = this.physics.add.group();
 
-  const blocks = this.physics.add.group();
-
-  // 配置するブロックの座標リスト
-  const positions = [
+  const enemyPositions = [
     { x: 250, y: 50 },
     { x: 300, y: 150 },
     { x: 400, y: 100 },
@@ -94,20 +102,18 @@ function create() {
     { x: 600, y: 50 },
   ];
 
-  // 各座標に対してブロックを作成し、グループに追加
-  positions.forEach((pos) => {
-    // 長方形を作成
-    const block = this.add.rectangle(pos.x, pos.y, 30, 30, 0xff0000);
+  enemyPositions.forEach((pos) => {
+    const enemy = this.add.rectangle(pos.x, pos.y, 30, 30, 0xff0000);
+    this.physics.add.existing(enemy);
+    enemy.body.setSize(30, 30);
+    enemy.body.setImmovable(true);
+    enemy.body.allowGravity = false;
 
-    // 物理エンジンに追加
-    this.physics.add.existing(block);
-
-    // ブロックを物理グループに追加
-    blocks.add(block);
+    enemys.add(enemy);
 
     // Tweenで上下に動かす
     this.tweens.add({
-      targets: block,
+      targets: enemy,
       y: pos.y + 500, // 500px 上下移動
       duration: 2000, // 2秒かけて移動
       yoyo: true, // 戻る
@@ -116,18 +122,26 @@ function create() {
     });
   });
 
-  // プレイヤーがブロックに触れたら初期位置に戻す
-  this.physics.add.overlap(player, blocks, () => {
+  this.physics.add.overlap(player, enemys, () => {
     player.setPosition(100, 450);
     alert("ゲームオーバー");
   });
 
-  const goal = this.add.rectangle(800, 100, 50, 100, 0x00ff00);
+  //// ゴール
+  const goal = this.add.rectangle(750, 50, 100, 50, 0x00ff00);
   this.physics.add.existing(goal);
+  goal.body.setSize(100, 50);
+  goal.body.setImmovable(true);
+  goal.body.allowGravity = false;
+
   this.physics.add.overlap(player, goal, () => {
     alert("ゴール！");
     player.setPosition(100, 450);
   });
+
+  ////衝突
+  this.physics.add.collider(player, platforms);
+  this.physics.add.collider(player, blocks);
 }
 
 function update() {
