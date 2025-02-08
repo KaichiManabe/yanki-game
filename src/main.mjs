@@ -15,13 +15,16 @@ const config = {
   },
 };
 var player;
-var stars;
 var bombs;
 var platforms;
 var cursors;
-var score = 0;
-var gameOver = false;
-var scoreText;
+
+let star;
+let score = 0;
+let scoreText;
+let timeLeft = 120; // 120秒の制限時間
+let timerText;
+let timerEvent;
 
 var game = new Phaser.Game(config);
 
@@ -37,8 +40,6 @@ function preload() {
 }
 
 function create() {
-  ////スコア
-
   // 背景画像
   this.add.image(400, 300, "sky");
 
@@ -47,11 +48,35 @@ function create() {
   platforms.create(400, 32, "wall").setScale(2).refreshBody();
   platforms.create(400, 568, "wall").setScale(2).refreshBody();
 
+  ////スコア
   let score = 0;
   scoreText = this.add.text(30, 30, "スコア: " + score, {
     fontSize: "20px",
     fill: "#fff",
   });
+
+  ////タイム
+  let timer;
+  timerText = this.add.text(30, 60, "時間: " + timeLeft, {
+    fontSize: "20px",
+    fill: "#fff",
+  });
+  timerEvent = this.time.addEvent({
+    delay: 1000, // 1000ms = 1秒
+    callback: updateTimer,
+    callbackScope: this,
+    loop: true,
+  });
+  function updateTimer() {
+    if (timeLeft > 0) {
+      timeLeft--;
+      timerText.setText("時間: " + timeLeft);
+    } else {
+      alert("時間切れ！ゲームオーバー");
+      resetGame(); // 時間切れでリロード
+    }
+  }
+
   //// 障害物
   const blocks = this.physics.add.staticGroup();
   const blockInfo = [
@@ -255,7 +280,8 @@ function create() {
     player.setScale(1);
     score = 0;
     scoreText.setText("スコア: " + score);
-
+    timeLeft = 120; // 時間をリセット
+    timerText.setText("時間: " + timeLeft);
     // スターを復活させる
     star.enableBody(true, 100, 350, true, true);
   }
@@ -267,11 +293,14 @@ function create() {
   goal.body.allowGravity = false;
 
   this.physics.add.overlap(player, goal, () => {
-    alert("ゴール！");
     player.setPosition(100, 450);
     player.setScale(1);
     score += 1000;
-    scoreText.setText("スコア: " + score);
+    let timeBonus = timeLeft * 10; // 残り時間 × 10点をスコアに加算
+    console.log(timeBonus);
+    score += timeBonus;
+    alert(`ゴール！${score}点！`);
+    resetGame();
   });
 
   ////スター
