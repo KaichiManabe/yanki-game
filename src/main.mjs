@@ -95,11 +95,11 @@ function create() {
   const enemys = this.physics.add.group();
 
   const enemyInfo = [
-    { x: 250, y: 50, w: 30, h: 30 },
-    { x: 300, y: 150, w: 40, h: 30 },
-    { x: 400, y: 100, w: 30, h: 30 },
-    { x: 500, y: 250, w: 30, h: 30 },
-    { x: 600, y: 50, w: 30, h: 30 },
+    { name: 1, x: 250, y: 50, w: 30, h: 30 },
+    { name: 2, x: 300, y: 150, w: 40, h: 30 },
+    { name: 3, x: 400, y: 100, w: 30, h: 30 },
+    { name: 4, x: 500, y: 250, w: 30, h: 30 },
+    { name: 5, x: 600, y: 50, w: 30, h: 30 },
   ];
 
   enemyInfo.forEach((ene) => {
@@ -107,16 +107,6 @@ function create() {
     this.physics.add.existing(enemy);
 
     enemys.add(enemy);
-
-    // Tweenで上下に動かす
-    this.tweens.add({
-      targets: enemy,
-      y: ene.y + 500, // 500px 上下移動
-      duration: 2000, // 2秒かけて移動
-      yoyo: true, // 戻る
-      repeat: -1, // 無限ループ
-      ease: "Sine.easeInOut",
-    });
   });
 
   this.physics.add.overlap(player, enemys, () => {
