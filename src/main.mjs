@@ -37,6 +37,8 @@ function preload() {
 }
 
 function create() {
+  ////スコア
+  const score = 0;
   // 背景画像
   this.add.image(400, 300, "sky");
 
@@ -246,13 +248,19 @@ function create() {
   //// ゴール
   const goal = this.add.rectangle(750, 50, 100, 50, 0x00ff00);
   this.physics.add.existing(goal);
-  goal.body.setSize(100, 50);
   goal.body.setImmovable(true);
   goal.body.allowGravity = false;
 
   this.physics.add.overlap(player, goal, () => {
     alert("ゴール！");
     player.setPosition(100, 450);
+  });
+
+  ////スター
+  const star = this.physics.add.sprite(100, 300, "star");
+  this.physics.add.existing(star);
+  this.physics.add.overlap(player, star, () => {
+    star.destroy();
   });
 
   ////衝突
