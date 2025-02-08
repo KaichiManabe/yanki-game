@@ -37,24 +37,24 @@ function preload() {
 }
 
 function create() {
+  //後で消す
   this.add.image(400, 300, "sky");
-
   platforms = this.physics.add.staticGroup();
-
   platforms.create(400, 32, "wall").setScale(2).refreshBody();
   platforms.create(400, 568, "wall").setScale(2).refreshBody();
 
+  //player
   player = this.physics.add.sprite(100, 450, "dude");
-
+  //外に出ないように
   player.setCollideWorldBounds(true);
 
+  //playerの描画
   this.anims.create({
     key: "left",
     frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
     frameRate: 10,
     repeat: -1,
   });
-
   this.anims.create({
     key: "right",
     frames: this.anims.generateFrameNumbers("dude", { start: 5, end: 8 }),
@@ -82,6 +82,33 @@ function create() {
   });
 
   this.physics.add.collider(player, platforms);
+
+  const blocks = [];
+
+  // 配置するブロックの座標リスト
+  const positions = [
+    { x: 250, y: 50 },
+    { x: 300, y: 150 },
+    { x: 400, y: 100 },
+    { x: 500, y: 250 },
+    { x: 600, y: 50 },
+  ];
+
+  // 各座標に対してブロックを作成し、配列に追加
+  positions.forEach((pos) => {
+    const block = this.add.rectangle(pos.x, pos.y, 30, 30, 0xff0000);
+    blocks.push(block);
+
+    // Tweenで上下に動かす
+    this.tweens.add({
+      targets: block,
+      y: pos.y + 500, // 500px 上下移動
+      duration: 2000, // 2秒かけて移動
+      yoyo: true, // 戻る
+      repeat: -1, // 無限ループ
+      ease: "Sine.easeInOut",
+    });
+  });
 }
 
 function update() {

@@ -2,8 +2,9 @@
   "name": "yanki-game",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.mjs",
   "scripts": {
+    "dev": "npx http-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
