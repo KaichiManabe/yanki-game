@@ -17,6 +17,8 @@ export class GameScene1 extends Phaser.Scene {
     this.load.image("sky", "assets/sky.png");
     this.load.image("wall", "assets/platform.png");
     this.load.image("star", "assets/star.png");
+    this.load.image("setting", "assets/setting.png");
+
     this.load.image("bomb", "assets/bomb.png");
     this.load.spritesheet("dude", "assets/dude.png", {
       frameWidth: 32,
@@ -32,6 +34,18 @@ export class GameScene1 extends Phaser.Scene {
     platforms = this.physics.add.staticGroup();
     platforms.create(400, 32, "wall").setScale(2).refreshBody();
     platforms.create(400, 568, "wall").setScale(2).refreshBody();
+
+    // 設定ボタン
+    const settingsButton = this.add
+      .image(750, 40, "setting") // 右上に配置
+      .setScale(0.4)
+      .setInteractive();
+
+    settingsButton.on("pointerdown", () => {
+      // this.showPauseMenu();
+    });
+
+    this.cursors = this.input.keyboard.createCursorKeys();
 
     ////スコア
     let score = 0;
