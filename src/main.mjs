@@ -114,13 +114,44 @@ function create() {
     enemy.body.allowGravity = false;
   });
 
-  
+  //ぐるぐる回転する敵
+  const circleEnemy = this.physics.add.sprite(400, 100, "dude");
+  circleEnemy.setVelocityX(150); // 初期の移動方向をX軸に設定
+  circleEnemy.angle = 0; // 初期角度
+  circleEnemy.distanceTraveled = 0; // 移動距離を追跡
+
+  // フレームごとに処理
+  this.physics.world.on("worldstep", () => {
+    // 移動距離を計算
+    const velocityX = circleEnemy.body.velocity.x;
+    const velocityY = circleEnemy.body.velocity.y;
+    const speed = Math.sqrt(velocityX ** 2 + velocityY ** 2); // 速度の大きさ
+    circleEnemy.distanceTraveled += (speed * this.game.loop.delta) / 1000;
+
+    // 150px 移動ごとに方向変更
+    if (circleEnemy.distanceTraveled >= 150) {
+      circleEnemy.distanceTraveled = 0; // リセット
+
+      // 90度回転
+      circleEnemy.angle += 90;
+
+      // 新しい方向へ進む
+      const newVelocityX = -velocityY; // X方向とY方向を入れ替え
+      const newVelocityY = velocityX;
+      circleEnemy.setVelocityX(newVelocityX);
+      circleEnemy.setVelocityY(newVelocityY);
+    }
+  });
 
   this.physics.add.overlap(player, enemies, () => {
     player.setPosition(100, 450);
     alert("ゲームオーバー");
   });
 
+  this.physics.add.overlap(player, circleEnemy, () => {
+    player.setPosition(100, 450);
+    alert("ゲームオーバー");
+  });
   //// ゴール
   const goal = this.add.rectangle(750, 50, 100, 50, 0x00ff00);
   this.physics.add.existing(goal);
