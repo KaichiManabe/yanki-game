@@ -92,90 +92,153 @@ function create() {
     frameRate: 20,
   });
 
-  //// 敵キャラ
+  ////敵
   const enemies = this.physics.add.group({
     defaultKey: "dude",
     collideWorldBounds: true,
   });
 
   const enemyInfo = [
-    { name: 2, x: 300, y: 150, w: 40, h: 30, rotate: true },
-    { name: 3, x: 400, y: 100, w: 30, h: 30, rotate: true },
-    { name: 4, x: 500, y: 250, w: 30, h: 30 },
+    {
+      name: 2,
+      x: 300,
+      y: 150,
+      w: 40,
+      h: 30,
+      rotate: true,
+      circle: false,
+      hitSize: {
+        height: 3,
+        width: 1,
+      },
+      velocity: {
+        x: 150,
+        y: 150,
+      },
+    },
+    {
+      name: 3,
+      x: 400,
+      y: 100,
+      w: 30,
+      h: 30,
+      rotate: false,
+      circle: true,
+      hitSize: {
+        height: 1.5,
+        width: 1,
+      },
+      velocity: {
+        x: 150,
+        y: 150,
+      },
+    },
+    {
+      name: 4,
+      x: 500,
+      y: 250,
+      w: 30,
+      h: 30,
+      rotate: false,
+      circle: false,
+      hitSize: {
+        height: 1.5,
+        width: 4,
+      },
+      velocity: {
+        x: 150,
+        y: 150,
+      },
+    },
   ];
 
   enemyInfo.forEach((ene) => {
     const enemy = this.physics.add.sprite(ene.x, ene.y, "dude");
     enemies.add(enemy);
-    enemy.setVelocityY(150);
+    enemy.setVelocityY(ene.velocity.y);
     enemy.setBounce(1, 1);
     enemy.setCollideWorldBounds(true);
-    enemy.rotate = ene.rotate;
     enemy.body.allowGravity = false;
-  });
+    enemy.rotate = ene.rotate;
 
-  //ぐるぐる回転する敵
-  // 敵キャラのスプライト
-  const circleEnemy = this.physics.add.sprite(400, 100, "dude");
+    //敵が壁に衝突
+    this.physics.add.collider(enemies, blocks, (enemy) => {
+      if (enemy.rotate) {
+        // ランダムに 90度回転
+        enemy.angle += 90;
 
-  // 当たり判定を 1.5 倍に設定
-  const hitboxWidth = circleEnemy.width * 1;
-  const hitboxHeight = circleEnemy.height * 4;
-  circleEnemy.setSize(hitboxWidth, hitboxHeight);
+        // 方向を変更
+        const currentVelocityX = enemy.body.velocity.x;
+        const currentVelocityY = enemy.body.velocity.y;
 
-  // 物理ボディのオフセットを中央に調整
-  circleEnemy.setOffset(
-    (circleEnemy.width - hitboxWidth) / 2,
-    (circleEnemy.height - hitboxHeight) / 2
-  );
+        // ランダムに X/Y を切り替え
+        enemy.setVelocityX(currentVelocityY);
+        enemy.setVelocityY(-currentVelocityX);
+      }
+    });
+    this.physics.add.collider(enemies, platforms, (enemy) => {
+      if (enemy.rotate) {
+        // ランダムに 90度回転
+        enemy.angle += 90;
 
-  // 当たり判定の範囲を描画するための Graphics
-  const hitboxGraphics = this.add.graphics();
-  hitboxGraphics.fillStyle(0xff0000, 0.3); // 赤色 (0xff0000)、透明度 0.3
-  hitboxGraphics.fillRect(
-    circleEnemy.x - hitboxWidth / 2,
-    circleEnemy.y - hitboxHeight / 2,
-    hitboxWidth,
-    hitboxHeight
-  );
+        // 方向を変更
+        const currentVelocityX = enemy.body.velocity.x;
+        const currentVelocityY = enemy.body.velocity.y;
 
-  // 更新処理 (スプライトの位置に合わせて描画を移動)
-  this.physics.world.on("worldstep", () => {
-    hitboxGraphics.clear(); // クリア
-    hitboxGraphics.fillStyle(0xff0000, 0.3); // 赤色 (透明度 0.3)
+        // ランダムに X/Y を切り替え
+        enemy.setVelocityX(currentVelocityY);
+        enemy.setVelocityY(-currentVelocityX);
+      }
+    });
+
+    //ぐるぐる回る敵
+    if (ene.circle) {
+      enemy.setVelocityX(ene.velocity.x);
+      enemy.angle = 0;
+      enemy.distanceTraveled = 0;
+
+      this.physics.world.on("worldstep", () => {
+        const velocityX = enemy.body.velocity.x;
+        const velocityY = enemy.body.velocity.y;
+        const speed = Math.sqrt(velocityX ** 2 + velocityY ** 2);
+        enemy.distanceTraveled += (speed * this.game.loop.delta) / 1000;
+
+        if (enemy.distanceTraveled >= 150) {
+          enemy.distanceTraveled = 0;
+          enemy.setVelocityX(-velocityY);
+          enemy.setVelocityY(velocityX);
+        }
+      });
+    }
+
+    //敵の当たり判定
+    const hitboxWidth = enemy.width * ene.hitSize.width;
+    const hitboxHeight = enemy.height * ene.hitSize.height;
+    enemy.setSize(hitboxWidth, hitboxHeight);
+    enemy.setOffset(
+      (enemy.width - hitboxWidth) / 2,
+      (enemy.height - hitboxHeight) / 2
+    );
+
+    const hitboxGraphics = this.add.graphics();
+    hitboxGraphics.fillStyle(0xff0000, 0.3);
     hitboxGraphics.fillRect(
-      circleEnemy.x - hitboxWidth / 2,
-      circleEnemy.y - hitboxHeight / 2,
+      enemy.x - hitboxWidth / 2,
+      enemy.y - hitboxHeight / 2,
       hitboxWidth,
       hitboxHeight
     );
-  });
 
-  circleEnemy.setVelocityX(150); // 初期の移動方向をX軸に設定
-  circleEnemy.angle = 0; // 初期角度
-  circleEnemy.distanceTraveled = 0; // 移動距離を追跡
-
-  // フレームごとに処理
-  this.physics.world.on("worldstep", () => {
-    // 移動距離を計算
-    const velocityX = circleEnemy.body.velocity.x;
-    const velocityY = circleEnemy.body.velocity.y;
-    const speed = Math.sqrt(velocityX ** 2 + velocityY ** 2); // 速度の大きさ
-    circleEnemy.distanceTraveled += (speed * this.game.loop.delta) / 1000;
-
-    // 150px 移動ごとに方向変更
-    if (circleEnemy.distanceTraveled >= 150) {
-      circleEnemy.distanceTraveled = 0; // リセット
-
-      // 90度回転
-      circleEnemy.angle += 90;
-
-      // 新しい方向へ進む
-      const newVelocityX = -velocityY; // X方向とY方向を入れ替え
-      const newVelocityY = velocityX;
-      circleEnemy.setVelocityX(newVelocityX);
-      circleEnemy.setVelocityY(newVelocityY);
-    }
+    this.physics.world.on("worldstep", () => {
+      hitboxGraphics.clear();
+      hitboxGraphics.fillStyle(0xff0000, 0.3);
+      hitboxGraphics.fillRect(
+        enemy.x - hitboxWidth / 2,
+        enemy.y - hitboxHeight / 2,
+        hitboxWidth,
+        hitboxHeight
+      );
+    });
   });
 
   this.physics.add.overlap(player, enemies, () => {
@@ -183,10 +246,6 @@ function create() {
     alert("ゲームオーバー");
   });
 
-  this.physics.add.overlap(player, circleEnemy, () => {
-    player.setPosition(100, 450);
-    alert("ゲームオーバー");
-  });
   //// ゴール
   const goal = this.add.rectangle(750, 50, 100, 50, 0x00ff00);
   this.physics.add.existing(goal);
@@ -202,35 +261,6 @@ function create() {
   ////衝突
   this.physics.add.collider(player, platforms);
   this.physics.add.collider(player, blocks);
-
-  this.physics.add.collider(enemies, blocks, (enemy) => {
-    if (enemy.rotate) {
-      // ランダムに 90度回転
-      enemy.angle += 90;
-
-      // 方向を変更
-      const currentVelocityX = enemy.body.velocity.x;
-      const currentVelocityY = enemy.body.velocity.y;
-
-      // ランダムに X/Y を切り替え
-      enemy.setVelocityX(currentVelocityY);
-      enemy.setVelocityY(-currentVelocityX);
-    }
-  });
-  this.physics.add.collider(enemies, platforms, (enemy) => {
-    if (enemy.rotate) {
-      // ランダムに 90度回転
-      enemy.angle += 90;
-
-      // 方向を変更
-      const currentVelocityX = enemy.body.velocity.x;
-      const currentVelocityY = enemy.body.velocity.y;
-
-      // ランダムに X/Y を切り替え
-      enemy.setVelocityX(currentVelocityY);
-      enemy.setVelocityY(-currentVelocityX);
-    }
-  });
 }
 
 function update() {
