@@ -94,27 +94,24 @@ function create() {
   //// 敵キャラ
   const enemys = this.physics.add.group();
 
-  const enemyPositions = [
-    { x: 250, y: 50 },
-    { x: 300, y: 150 },
-    { x: 400, y: 100 },
-    { x: 500, y: 250 },
-    { x: 600, y: 50 },
+  const enemyInfo = [
+    { x: 250, y: 50, w: 30, h: 30 },
+    { x: 300, y: 150, w: 40, h: 30 },
+    { x: 400, y: 100, w: 30, h: 30 },
+    { x: 500, y: 250, w: 30, h: 30 },
+    { x: 600, y: 50, w: 30, h: 30 },
   ];
 
-  enemyPositions.forEach((pos) => {
-    const enemy = this.add.rectangle(pos.x, pos.y, 30, 30, 0xff0000);
+  enemyInfo.forEach((ene) => {
+    const enemy = this.add.rectangle(ene.x, ene.y, ene.w, ene.h, 0xff0000);
     this.physics.add.existing(enemy);
-    enemy.body.setSize(30, 30);
-    enemy.body.setImmovable(true);
-    enemy.body.allowGravity = false;
 
     enemys.add(enemy);
 
     // Tweenで上下に動かす
     this.tweens.add({
       targets: enemy,
-      y: pos.y + 500, // 500px 上下移動
+      y: ene.y + 500, // 500px 上下移動
       duration: 2000, // 2秒かけて移動
       yoyo: true, // 戻る
       repeat: -1, // 無限ループ
@@ -142,6 +139,8 @@ function create() {
   ////衝突
   this.physics.add.collider(player, platforms);
   this.physics.add.collider(player, blocks);
+  this.physics.add.collider(enemys, blocks);
+  this.physics.add.collider(enemys, platforms);
 }
 
 function update() {
