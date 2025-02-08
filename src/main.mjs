@@ -165,7 +165,6 @@ function create() {
     this.physics.add.collider(enemies, blocks, (enemy) => {
       if (enemy.rotate) {
         // ランダムに 90度回転
-        enemy.angle += 90;
 
         // 方向を変更
         const currentVelocityX = enemy.body.velocity.x;
@@ -179,7 +178,6 @@ function create() {
     this.physics.add.collider(enemies, platforms, (enemy) => {
       if (enemy.rotate) {
         // ランダムに 90度回転
-        enemy.angle += 90;
 
         // 方向を変更
         const currentVelocityX = enemy.body.velocity.x;
@@ -194,7 +192,6 @@ function create() {
     //ぐるぐる回る敵
     if (ene.circle) {
       enemy.setVelocityX(ene.velocity.x);
-      enemy.angle = 0;
       enemy.distanceTraveled = 0;
 
       this.physics.world.on("worldstep", () => {
