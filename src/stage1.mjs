@@ -42,7 +42,7 @@ export class GameScene1 extends Phaser.Scene {
       .setInteractive();
 
     settingsButton.on("pointerdown", () => {
-      this.scene.pause(); // ゲームシーンを一時停止
+      this.scene.pause();
       this.scene.launch("PauseScene");
     });
 
@@ -268,10 +268,11 @@ export class GameScene1 extends Phaser.Scene {
 
     ////ゲームオーバー
     this.physics.add.overlap(player, enemies, () => {
-      player.setPosition(100, 450);
-      alert("ゲームオーバー");
+      this.scene.pause();
+      this.scene.launch("GameOver");
       resetGame();
     });
+
     function resetGame() {
       player.setPosition(100, 450);
       player.setScale(1);
@@ -293,11 +294,10 @@ export class GameScene1 extends Phaser.Scene {
       player.setPosition(100, 450);
       player.setScale(1);
       score += 1000;
-      let timeBonus = timeLeft * 10; // 残り時間 × 10点をスコアに加算
-      console.log(timeBonus);
+      let timeBonus = timeLeft * 10;
       score += timeBonus;
-      
-      this.scene.pause(); // ゲームシーンを一時停止
+      localStorage.setItem("Stage1NewScore", score);
+      this.scene.pause();
       this.scene.launch("ResultScene");
       resetGame();
     });

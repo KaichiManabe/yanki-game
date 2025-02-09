@@ -1,30 +1,11 @@
-export class ResultScene extends Phaser.Scene {
+export class GameOver extends Phaser.Scene {
   constructor() {
-    super({ key: "ResultScene" });
+    super({ key: "GameOver" });
   }
 
   create() {
-    const pauseText = this.add.text(250, 130, "ステージクリア！", {
+    const pauseText = this.add.text(250, 130, "ゲームオーバー", {
       fontSize: "40px",
-      fill: "#ffffff",
-    });
-    let Stage1NewScore = localStorage.getItem("Stage1NewScore");
-    let Stage1TopScore = localStorage.getItem("Stage1TopScore");
-
-    if (Stage1TopScore < Stage1NewScore) {
-      Stage1TopScore = Stage1NewScore;
-      localStorage.setItem("Stage1TopScore", Stage1TopScore);
-      this.add.text(250, 200, `新記録！`, {
-        fontSize: "16px",
-        fill: "red",
-      });
-    }
-    this.add.text(250, 230, `今回のスコア: ${Stage1NewScore}`, {
-      fontSize: "32px",
-      fill: "#ffffff",
-    });
-    this.add.text(250, 300, `最高スコア: ${Stage1TopScore}`, {
-      fontSize: "32px",
       fill: "#ffffff",
     });
 

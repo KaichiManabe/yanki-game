@@ -25,5 +25,17 @@ export class StageSelectScene extends Phaser.Scene {
         .on("pointerover", () => button.setStyle({ fill: "#ff0" }))
         .on("pointerout", () => button.setStyle({ fill: "#0f0" }));
     }
+    this.add.text(400, 100, "トップスコア", {
+      fontSize: "24px",
+      fill: "#fff",
+    });
+    for (let i = 1; i <= 5; i++) {
+      let topScore = localStorage.getItem(`Stage${i}TopScore`) || 0; // デフォルトは0
+
+      this.add.text(400, 100 + i * 50, ` ${topScore}`, {
+        fontSize: "24px",
+        fill: "#fff",
+      });
+    }
   }
 }

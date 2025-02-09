@@ -3,6 +3,7 @@ import { StageSelectScene } from "./stageSelect.mjs";
 import { PauseScene } from "./pause.mjs";
 import { ResultScene } from "./result.mjs";
 import { ProfileSetup } from "./profileSetup.mjs";
+import { GameOver } from "./gameOver.mjs";
 const config = {
   type: Phaser.AUTO,
   width: 800,
@@ -13,7 +14,14 @@ const config = {
       debug: false,
     },
   },
-  scene: [ProfileSetup, StageSelectScene, GameScene1, PauseScene, ResultScene],
+  scene: [
+    ProfileSetup,
+    StageSelectScene,
+    GameScene1,
+    PauseScene,
+    GameOver,
+    ResultScene,
+  ],
 };
 
 var game = new Phaser.Game(config);
