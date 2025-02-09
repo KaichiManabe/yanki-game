@@ -4,7 +4,12 @@ export class StageSelectScene extends Phaser.Scene {
   }
 
   create() {
+    let storedName = localStorage.getItem("playerName");
     this.add.text(200, 50, "ステージ選択", {
+      fontSize: "32px",
+      fill: "#fff",
+    });
+    this.add.text(500, 50, `${storedName} さん`, {
       fontSize: "32px",
       fill: "#fff",
     });

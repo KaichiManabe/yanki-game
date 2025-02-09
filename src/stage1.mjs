@@ -296,8 +296,9 @@ export class GameScene1 extends Phaser.Scene {
       let timeBonus = timeLeft * 10; // 残り時間 × 10点をスコアに加算
       console.log(timeBonus);
       score += timeBonus;
+      
       this.scene.pause(); // ゲームシーンを一時停止
-      this.scene.launch("PauseScene");
+      this.scene.launch("ResultScene");
       resetGame();
     });
 
