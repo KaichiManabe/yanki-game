@@ -1,4 +1,4 @@
-import { getStageRanking } from "./api/scoreApi.mjs";
+import { getStageRanking } from "../api/scoreApi.mjs";
 
 export class RankScene extends Phaser.Scene {
   constructor() {
