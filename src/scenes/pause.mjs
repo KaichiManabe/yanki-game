@@ -3,8 +3,12 @@ export class PauseScene extends Phaser.Scene {
     super({ key: "PauseScene" });
   }
 
+  init(data) {
+    this.stage = data.stage || 1; // デフォルトでステージ1
+  }
+
   create() {
-    const pauseText = this.add.text(250, 150, "一時停止", {
+    this.add.text(250, 150, "一時停止", {
       fontSize: "32px",
       fill: "#ffffff",
     });
@@ -20,22 +24,23 @@ export class PauseScene extends Phaser.Scene {
       .on("pointerover", () => backButton.setStyle({ fill: "#ff0" }))
       .on("pointerout", () => backButton.setStyle({ fill: "#ffffff" }))
       .on("pointerdown", () => {
-        this.scene.stop("GameScene1");
-        this.scene.start("StageSelectScene");
+        this.scene.stop(`GameScene${this.stage}`); // 一時停止しているゲームを停止
+        this.scene.start("StageSelectScene"); // ステージ選択画面へ戻る
       });
+
     const retryButton = this.add
       .text(250, 320, "やり直す", {
         fontSize: "24px",
         fill: "#ffffff",
         padding: { x: 10, y: 5 },
       })
-      .setInteractive({ useHandCursor: true }) // カーソルを指アイコンに変更
-      .setDepth(10) // 画面最前面に配置
-      .on("pointerover", () => retryButton.setStyle({ fill: "#ff0" })) // マウスオーバー
-      .on("pointerout", () => retryButton.setStyle({ fill: "#ffffff" })) // マウスが離れた時
+      .setInteractive({ useHandCursor: true })
+      .setDepth(10)
+      .on("pointerover", () => retryButton.setStyle({ fill: "#ff0" }))
+      .on("pointerout", () => retryButton.setStyle({ fill: "#ffffff" }))
       .on("pointerdown", () => {
-        this.scene.stop();
-        this.scene.get("GameScene1").scene.restart();
+        this.scene.stop(); // PauseScene を閉じる
+        this.scene.get(`GameScene${this.stage}`).scene.restart(); // 該当の GameScene を再スタート
       });
 
     // キャンセルボタン
@@ -47,11 +52,11 @@ export class PauseScene extends Phaser.Scene {
       })
       .setInteractive({ useHandCursor: true })
       .setDepth(10)
-      .on("pointerover", () => cancelButton.setStyle({ fill: "#ff0" })) // マウスオーバー
-      .on("pointerout", () => cancelButton.setStyle({ fill: "#ffffff" })) // マウスが離れた時
+      .on("pointerover", () => cancelButton.setStyle({ fill: "#ff0" }))
+      .on("pointerout", () => cancelButton.setStyle({ fill: "#ffffff" }))
       .on("pointerdown", () => {
         this.scene.stop(); // 一時停止シーンを終了
-        this.scene.resume("GameScene1"); // ゲームを再開
+        this.scene.resume(`GameScene${this.stage}`); // 該当の GameScene を再開
       });
   }
 }

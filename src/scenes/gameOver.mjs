@@ -3,6 +3,10 @@ export class GameOver extends Phaser.Scene {
     super({ key: "GameOver" });
   }
 
+  init(data) {
+    this.stage = data.stage || 1; // デフォルトでステージ1
+  }
+
   create() {
     this.add.text(250, 130, "ゲームオーバー", {
       fontSize: "40px",
@@ -15,28 +19,28 @@ export class GameOver extends Phaser.Scene {
         fill: "#ffffff",
         padding: { x: 10, y: 5 },
       })
-      .setInteractive({ useHandCursor: true }) // カーソルを指アイコンに変更
-      .setDepth(10) // 画面最前面に配置
-      .on("pointerover", () => backButton.setStyle({ fill: "#ff0" })) // マウスオーバー
-      .on("pointerout", () => backButton.setStyle({ fill: "#ffffff" })) // マウスが離れた時
+      .setInteractive({ useHandCursor: true })
+      .setDepth(10)
+      .on("pointerover", () => backButton.setStyle({ fill: "#ff0" }))
+      .on("pointerout", () => backButton.setStyle({ fill: "#ffffff" }))
       .on("pointerdown", () => {
-        this.scene.stop("GameScene1"); // ゲームを停止
+        this.scene.stop(`GameScene${this.stage}`); // ゲームを停止
         this.scene.start("StageSelectScene"); // ステージ選択画面に戻る
       });
 
-    const cancelButton = this.add
+    const retryButton = this.add
       .text(250, 420, "やり直す", {
         fontSize: "24px",
         fill: "#ffffff",
         padding: { x: 10, y: 5 },
       })
-      .setInteractive({ useHandCursor: true }) // カーソルを指アイコンに変更
-      .setDepth(10) // 画面最前面に配置
-      .on("pointerover", () => cancelButton.setStyle({ fill: "#ff0" })) // マウスオーバー
-      .on("pointerout", () => cancelButton.setStyle({ fill: "#ffffff" })) // マウスが離れた時
+      .setInteractive({ useHandCursor: true })
+      .setDepth(10)
+      .on("pointerover", () => retryButton.setStyle({ fill: "#ff0" }))
+      .on("pointerout", () => retryButton.setStyle({ fill: "#ffffff" }))
       .on("pointerdown", () => {
-        this.scene.stop(); // 一時停止シーンを終了
-        this.scene.get("GameScene1").scene.restart();
+        this.scene.stop(); // GameOverシーンを閉じる
+        this.scene.get(`GameScene${this.stage}`).scene.restart(); // ゲーム再起動
       });
   }
 }

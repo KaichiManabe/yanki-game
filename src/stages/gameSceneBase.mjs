@@ -90,9 +90,9 @@ export class GameSceneBase extends Phaser.Scene {
     this.player.setPosition(100, 450);
     this.player.setScale(1);
     this.score = 0;
-    this.scoreText.setText("スコア: " + score);
+    this.scoreText.setText("スコア: " + this.score);
     this.timeLeft = 120;
-    this.timerText.setText("時間: " + timeLeft);
+    this.timerText.setText("時間: " + this.timeLeft);
     this.star.enableBody(true, 100, 350, true, true);
   }
 
@@ -231,10 +231,12 @@ export class GameSceneBase extends Phaser.Scene {
     this.physics.add.overlap(this.player, goal, () => {
       this.score += 1000 + this.timeLeft * 10;
       localStorage.setItem(`Stage${this.stage}NewScore`, this.score);
-      this.scene.start("ResultScene", {
+      this.scene.pause();
+      this.scene.launch("ResultScene", {
         stage: this.stage,
         newScore: this.score,
       });
+      this.resetGame();
     });
   }
 
@@ -244,6 +246,7 @@ export class GameSceneBase extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.star, () => {
       this.star.disableBody(true, true);
       this.score += 1000;
+      this.player.setScale(1.4);
       this.scoreText.setText(`スコア: ${this.score}`);
     });
   }
