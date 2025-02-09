@@ -10,6 +10,19 @@ export class RankScene extends Phaser.Scene {
       fontSize: "32px",
       fill: "#fff",
     });
+    const backButton = this.add
+      .text(500, 50, "ステージ選択へ→", {
+        fontSize: "24px",
+        fill: "#ffffff",
+      })
+      .setInteractive({ useHandCursor: true }) // カーソルを指アイコンに変更
+      .setDepth(10) // 画面最前面に配置
+      .on("pointerover", () => backButton.setStyle({ fill: "#ff0" })) // マウスオーバー
+      .on("pointerout", () => backButton.setStyle({ fill: "#ffffff" })) // マウスが離れた時
+      .on("pointerdown", () => {
+        this.scene.stop("RankScene"); // ゲームを停止
+        this.scene.start("StageSelectScene"); // ステージ選択画面に戻る
+      });
 
     // スクロール用のコンテナ作成
     this.rankContainer = this.add.container(0, 0);
