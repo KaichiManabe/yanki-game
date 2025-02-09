@@ -9,10 +9,6 @@ export class StageSelectScene extends Phaser.Scene {
       fontSize: "32px",
       fill: "#fff",
     });
-    this.add.text(500, 50, `${storedName} さん`, {
-      fontSize: "32px",
-      fill: "#fff",
-    });
 
     for (let i = 1; i <= 5; i++) {
       let button = this.add
@@ -25,12 +21,21 @@ export class StageSelectScene extends Phaser.Scene {
         .on("pointerover", () => button.setStyle({ fill: "#ff0" }))
         .on("pointerout", () => button.setStyle({ fill: "#0f0" }));
     }
-    this.add.text(400, 100, "トップスコア", {
+    let rankButton = this.add
+      .text(200, 400, `ランキング`, {
+        fontSize: "24px",
+        fill: "#0f0",
+      })
+      .setInteractive()
+      .on("pointerdown", () => this.scene.start(`RankScene`))
+      .on("pointerover", () => rankButton.setStyle({ fill: "#ff0" }))
+      .on("pointerout", () => rankButton.setStyle({ fill: "#0f0" }));
+    this.add.text(400, 100, `${storedName} さんの最高点`, {
       fontSize: "24px",
       fill: "#fff",
     });
     for (let i = 1; i <= 5; i++) {
-      let topScore = localStorage.getItem(`Stage${i}TopScore`) || 0; 
+      let topScore = localStorage.getItem(`Stage${i}TopScore`) || 0;
 
       this.add.text(400, 100 + i * 50, ` ${topScore}`, {
         fontSize: "24px",

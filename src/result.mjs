@@ -1,3 +1,4 @@
+import { createScore } from "./api/scoreApi.mjs";
 export class ResultScene extends Phaser.Scene {
   constructor() {
     super({ key: "ResultScene" });
@@ -8,12 +9,14 @@ export class ResultScene extends Phaser.Scene {
       fontSize: "40px",
       fill: "#ffffff",
     });
-    let Stage1NewScore = localStorage.getItem("Stage1NewScore");
-    let Stage1TopScore = localStorage.getItem("Stage1TopScore");
+    let Stage1NewScore = parseInt(localStorage.getItem("Stage1NewScore"));
+    let Stage1TopScore = parseInt(localStorage.getItem("Stage1TopScore"));
 
     if (Stage1TopScore < Stage1NewScore) {
       Stage1TopScore = Stage1NewScore;
       localStorage.setItem("Stage1TopScore", Stage1TopScore);
+      const playerName = localStorage.getItem("playerName");
+      createScore(playerName, 1, Stage1TopScore);
       this.add.text(250, 200, `新記録！`, {
         fontSize: "16px",
         fill: "red",

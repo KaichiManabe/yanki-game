@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@elysiajs/cors": "^1.2.0",
+    "dotenv": "^16.4.7",
+    "elysia": "^1.2.12",
     "http-server": "^14.1.1",
     "phaser": "^3.86.0"
   },

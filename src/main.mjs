@@ -4,6 +4,7 @@ import { PauseScene } from "./pause.mjs";
 import { ResultScene } from "./result.mjs";
 import { ProfileSetup } from "./profileSetup.mjs";
 import { GameOver } from "./gameOver.mjs";
+import { RankScene } from "./rank.mjs";
 const config = {
   type: Phaser.AUTO,
   width: 800,
@@ -21,6 +22,7 @@ const config = {
     PauseScene,
     GameOver,
     ResultScene,
+    RankScene,
   ],
 };
 
