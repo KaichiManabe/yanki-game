@@ -10,11 +10,11 @@ export class GameSceneBase extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("sky", "public/sky.png");
-    this.load.image("wall", "public/platform.png");
-    this.load.image("star", "public/star.png");
-    this.load.image("setting", "public/setting.png");
-    this.load.spritesheet("dude", "public/dude.png", {
+    this.load.image("sky", "/sky.png");
+    this.load.image("wall", "/platform.png");
+    this.load.image("star", "/star.png");
+    this.load.image("setting", "/setting.png");
+    this.load.spritesheet("dude", "/dude.png", {
       frameWidth: 32,
       frameHeight: 48,
     });
