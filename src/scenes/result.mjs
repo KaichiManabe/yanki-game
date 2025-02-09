@@ -59,8 +59,8 @@ export class ResultScene extends Phaser.Scene {
       .on("pointerover", () => backButton.setStyle({ fill: "#ff0" }))
       .on("pointerout", () => backButton.setStyle({ fill: "#ffffff" }))
       .on("pointerdown", () => {
-        this.scene.stop(`GameScene${this.stage}`); // ゲームを停止
-        this.scene.start("StageSelectScene"); // ステージ選択画面に戻る
+        this.scene.stop(`GameScene${this.stage}`);
+        this.scene.start("StageSelectScene");
       });
 
     const retryButton = this.add
