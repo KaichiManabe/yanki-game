@@ -6,7 +6,7 @@
     "dev/web": "npx http-server",
     "dev/server": "bun run server/server.js ",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx parcel build index.html --dist-dir dist"
+    "build": "npx parcel build index.html --dist-dir dist && cp public/* dist/ -r"
   },
   "author": "",
   "license": "ISC",
