@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "https://yanki-game.onrender.com";
 
 // スコアを登録する
 export async function createScore(playerName, stage, score) {
