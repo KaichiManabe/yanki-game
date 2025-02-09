@@ -4,6 +4,7 @@ import { cors } from "@elysiajs/cors";
 
 const prisma = new PrismaClient();
 const app = new Elysia();
+const port = process.env.PORT || 3000;
 // CORSを有効にする
 app.use(
   cors({
@@ -78,6 +79,6 @@ app.get("/rankings/:stage", async ({ params }) => {
 });
 
 // サーバー起動
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
+app.listen(port, () => {
+  console.log(`Server running on ${port}`);
 });

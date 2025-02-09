@@ -42,7 +42,7 @@ export async function deleteScore(id) {
 
 export async function getStageRanking(stage) {
   try {
-    const response = await fetch(`http://localhost:3000/rankings/${stage}`);
+    const response = await fetch(`${API_BASE_URL}/rankings/${stage}`);
     const data = await response.json();
     return data;
   } catch (error) {
