@@ -20,6 +20,9 @@ export class GameSceneBase extends Phaser.Scene {
   }
 
   create() {
+    if (this.playerHitbox) {
+      this.playerHitbox.destroy();
+    }
     // 背景
     this.add.image(400, 300, "sky");
 
@@ -60,6 +63,10 @@ export class GameSceneBase extends Phaser.Scene {
       .setCollideWorldBounds(true);
     this.createPlayerAnimations();
 
+    // **プレイヤーの当たり判定を可視化**
+    this.playerHitbox = this.add.graphics();
+    this.playerHitbox.fillStyle(0x00ff00, 0.3); // 緑色の透明な矩形
+
     // 障害物の作成（各ステージごとに異なる）
     this.createObstacles();
 
@@ -90,9 +97,16 @@ export class GameSceneBase extends Phaser.Scene {
     this.player.setPosition(100, 450);
     this.player.setScale(1);
     this.score = 0;
-    this.scoreText.setText("スコア: " + this.score);
+    this.scoreText.setText(`スコア: ${this.score}`);
     this.timeLeft = 120;
-    this.timerText.setText("時間: " + this.timeLeft);
+    this.timerText.setText(`時間: ${this.timeLeft}`);
+
+    // **プレイヤーの当たり判定を削除**
+    if (this.playerHitbox) {
+      this.playerHitbox.destroy();
+      this.playerHitbox = null;
+    }
+
     this.star.enableBody(true, 100, 350, true, true);
   }
 
@@ -250,6 +264,17 @@ export class GameSceneBase extends Phaser.Scene {
       this.scoreText.setText(`スコア: ${this.score}`);
     });
   }
+  updatePlayerHitbox() {
+    if (!this.playerHitbox) return;
+    this.playerHitbox.clear(); // 以前の描画をクリア
+    this.playerHitbox.fillStyle(0x00ff00, 0.3); // 緑色
+    this.playerHitbox.fillRect(
+      this.player.body.position.x, // X位置
+      this.player.body.position.y, // Y位置
+      this.player.body.width, // 幅
+      this.player.body.height // 高さ
+    );
+  }
 
   update() {
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -272,5 +297,6 @@ export class GameSceneBase extends Phaser.Scene {
     } else {
       this.player.setVelocityY(0);
     }
+    this.updatePlayerHitbox();
   }
 }
