@@ -4,7 +4,7 @@ export class GameOver extends Phaser.Scene {
   }
 
   create() {
-    const pauseText = this.add.text(250, 130, "ゲームオーバー", {
+    this.add.text(250, 130, "ゲームオーバー", {
       fontSize: "40px",
       fill: "#ffffff",
     });

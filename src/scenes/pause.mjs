@@ -34,7 +34,7 @@ export class PauseScene extends Phaser.Scene {
       .on("pointerover", () => retryButton.setStyle({ fill: "#ff0" })) // マウスオーバー
       .on("pointerout", () => retryButton.setStyle({ fill: "#ffffff" })) // マウスが離れた時
       .on("pointerdown", () => {
-        this.scene.stop(); // 一時停止シーンを終了
+        this.scene.stop();
         this.scene.get("GameScene1").scene.restart();
       });
 

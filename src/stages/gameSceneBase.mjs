@@ -29,7 +29,7 @@ export class GameSceneBase extends Phaser.Scene {
     this.platforms.create(400, 568, "wall").setScale(2).refreshBody();
 
     // 設定ボタン
-    const settingsButton = this.add
+    this.add
       .image(750, 40, "setting")
       .setScale(0.4)
       .setInteractive()
@@ -81,9 +81,19 @@ export class GameSceneBase extends Phaser.Scene {
       this.timeLeft--;
       this.timerText.setText(`時間: ${this.timeLeft}`);
     } else {
-      alert("時間切れ！ゲームオーバー");
       this.resetGame();
+      this.scene.launch("GameOverScene");
     }
+  }
+
+  resetGame() {
+    this.player.setPosition(100, 450);
+    this.player.setScale(1);
+    this.score = 0;
+    this.scoreText.setText("スコア: " + score);
+    this.timeLeft = 120;
+    this.timerText.setText("時間: " + timeLeft);
+    this.star.enableBody(true, 100, 350, true, true);
   }
 
   createPlayerAnimations() {
@@ -123,37 +133,86 @@ export class GameSceneBase extends Phaser.Scene {
 
     this.enemyInfo.forEach((ene) => {
       const enemy = this.physics.add.sprite(ene.x, ene.y, "dude");
-      enemy.setVelocity(ene.velocity.x, ene.velocity.y);
+      this.enemies.add(enemy);
+      enemy.setVelocityY(ene.velocity.y);
       enemy.setBounce(1, 1);
+      enemy.setCollideWorldBounds(true);
       enemy.body.allowGravity = false;
       enemy.rotate = ene.rotate;
 
-      this.enemies.add(enemy);
-
+      //敵が壁に衝突
       this.physics.add.collider(this.enemies, this.obstacles, (enemy) => {
+        if (enemy.rotate) {
+          // ランダムに 90度回転
+
+          // 方向を変更
+          const currentVelocityX = enemy.body.velocity.x;
+          const currentVelocityY = enemy.body.velocity.y;
+
+          // ランダムに X/Y を切り替え
+          enemy.setVelocityX(currentVelocityY);
+          enemy.setVelocityY(-currentVelocityX);
+        }
+      });
+      this.physics.add.collider(this.enemies, this.platforms, (enemy) => {
         if (enemy.rotate) {
           // 方向を変更
           const currentVelocityX = enemy.body.velocity.x;
           const currentVelocityY = enemy.body.velocity.y;
+
+          // ランダムに X/Y を切り替え
           enemy.setVelocityX(currentVelocityY);
           enemy.setVelocityY(-currentVelocityX);
         }
       });
 
+      //ぐるぐる回る敵
       if (ene.circle) {
+        enemy.setVelocityX(ene.velocity.x);
         enemy.distanceTraveled = 0;
+
         this.physics.world.on("worldstep", () => {
-          const speed = Math.sqrt(
-            enemy.body.velocity.x ** 2 + enemy.body.velocity.y ** 2
-          );
+          const velocityX = enemy.body.velocity.x;
+          const velocityY = enemy.body.velocity.y;
+          const speed = Math.sqrt(velocityX ** 2 + velocityY ** 2);
           enemy.distanceTraveled += (speed * this.game.loop.delta) / 1000;
+
           if (enemy.distanceTraveled >= 150) {
             enemy.distanceTraveled = 0;
-            enemy.setVelocityX(-enemy.body.velocity.y);
-            enemy.setVelocityY(enemy.body.velocity.x);
+            enemy.setVelocityX(-velocityY);
+            enemy.setVelocityY(velocityX);
           }
         });
       }
+
+      //敵の当たり判定
+      const hitboxWidth = enemy.width * ene.hitSize.width;
+      const hitboxHeight = enemy.height * ene.hitSize.height;
+      enemy.setSize(hitboxWidth, hitboxHeight);
+      enemy.setOffset(
+        (enemy.width - hitboxWidth) / 2,
+        (enemy.height - hitboxHeight) / 2
+      );
+
+      const hitboxGraphics = this.add.graphics();
+      hitboxGraphics.fillStyle(0xff0000, 0.3);
+      hitboxGraphics.fillRect(
+        enemy.x - hitboxWidth / 2,
+        enemy.y - hitboxHeight / 2,
+        hitboxWidth,
+        hitboxHeight
+      );
+
+      this.physics.world.on("worldstep", () => {
+        hitboxGraphics.clear();
+        hitboxGraphics.fillStyle(0xff0000, 0.3);
+        hitboxGraphics.fillRect(
+          enemy.x - hitboxWidth / 2,
+          enemy.y - hitboxHeight / 2,
+          hitboxWidth,
+          hitboxHeight
+        );
+      });
     });
 
     this.physics.add.overlap(this.player, this.enemies, () => {
