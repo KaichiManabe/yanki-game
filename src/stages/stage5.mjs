@@ -59,8 +59,10 @@ const obstacleInfo = [
   { x: 200, y: 150, w: 50, h: 500 },
 ];
 
+const starInfo = [{ x: 100, y: 300 }];
+
 export class GameScene5 extends GameSceneBase {
   constructor() {
-    super(5, enemyInfo, obstacleInfo);
+    super(5, enemyInfo, obstacleInfo, starInfo);
   }
 }

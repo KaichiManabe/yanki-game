@@ -1,9 +1,10 @@
 export class GameSceneBase extends Phaser.Scene {
-  constructor(stageNumber, enemyInfo = [], obstacleInfo = []) {
+  constructor(stageNumber, enemyInfo, obstacleInfo, starInfo) {
     super({ key: `GameScene${stageNumber}` });
     this.stage = stageNumber;
     this.enemyInfo = enemyInfo;
     this.obstacleInfo = obstacleInfo;
+    this.starInfo = starInfo;
     this.score = 0;
     this.timeLeft = 120;
   }
@@ -101,13 +102,16 @@ export class GameSceneBase extends Phaser.Scene {
     this.timeLeft = 120;
     this.timerText.setText(`時間: ${this.timeLeft}`);
 
-    // **プレイヤーの当たり判定を削除**
     if (this.playerHitbox) {
       this.playerHitbox.destroy();
       this.playerHitbox = null;
     }
 
-    this.star.enableBody(true, 100, 350, true, true);
+    if (this.stars) {
+      this.stars.children.iterate((star) => {
+        star.enableBody(true, star.x, star.y, true, true);
+      });
+    }
   }
 
   createPlayerAnimations() {
@@ -255,10 +259,16 @@ export class GameSceneBase extends Phaser.Scene {
   }
 
   createStar() {
-    this.star = this.physics.add.sprite(100, 300, "star");
-    this.physics.add.existing(this.star);
-    this.physics.add.overlap(this.player, this.star, () => {
-      this.star.disableBody(true, true);
+    this.stars = this.physics.add.group();
+    this.starInfo.forEach((starData) => {
+      const star = this.physics.add
+        .sprite(starData.x, starData.y, "star")
+        .setDepth(10);
+      this.stars.add(star);
+    });
+
+    this.physics.add.overlap(this.player, this.stars, (player, star) => {
+      star.disableBody(true, true);
       this.score += 1000;
       this.player.setScale(1.4);
       this.scoreText.setText(`スコア: ${this.score}`);
