@@ -30,7 +30,7 @@ export class StageSelectScene extends Phaser.Scene {
       fill: "#fff",
     });
     for (let i = 1; i <= 5; i++) {
-      let topScore = localStorage.getItem(`Stage${i}TopScore`) || 0; // デフォルトは0
+      let topScore = localStorage.getItem(`Stage${i}TopScore`) || 0; 
 
       this.add.text(400, 100 + i * 50, ` ${topScore}`, {
         fontSize: "24px",
