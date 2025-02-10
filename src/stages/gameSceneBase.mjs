@@ -39,7 +39,10 @@ export class GameSceneBase extends Phaser.Scene {
       .setInteractive()
       .on("pointerdown", () => {
         this.scene.pause();
-        this.scene.launch("PauseScene");
+        this.scene.launch("PauseScene", {
+          stage: this.stage,
+          newScore: this.score,
+        });
       });
 
     // スコアとタイマー
